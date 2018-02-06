@@ -11,5 +11,10 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="gulp-babel-DefinitelyTyped" level="application" />
     <orderEntry type="library" name="node-DefinitelyTyped" level="application" />
+    <orderEntry type="library" name="@types/gulp" level="application" />
+    <orderEntry type="library" name="@types/gulp-babel" level="application" />
+    <orderEntry type="library" name="@types/jest" level="application" />
+    <orderEntry type="library" name="@types/expect" level="application" />
+    <orderEntry type="library" name="@types/mysql" level="application" />
   </component>
 </module>

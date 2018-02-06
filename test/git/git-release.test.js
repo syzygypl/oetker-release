@@ -1,31 +1,40 @@
 import {existsSync, mkdirSync} from "fs";
-import {deleteRepos, initMockGitRepos} from "./git-release-mock";
+import {deleteRepos, createMockGitRepos, generateGitDirectoryPath} from "./git-release-mock";
 import git from "simple-git";
 import {processRelease} from "../../app/git/git-release";
 import {
+    DEFAULT_MOCK_LOCAL_REPO_PATH, DEFAULT_MOCK_REMOTE_REPO_PATH,
     getMockBranchConfig,
-    MOCK_DEVELOP, MOCK_MASTER, MOCK_REMOTE, MOCK_REPO_DIRECTORY_PATH,
+    MOCK_DEVELOP, MOCK_MASTER, MOCK_RELEASE, MOCK_REMOTE, MOCK_REPO_DIRECTORY_PATH,
     MOCK_STAGING,
     MOCK_VERSION
 } from "./git-mock-configuration";
+import {createStepHandlingFunction} from "../../app/git/git-result-handling";
 
 it('creates mock repositories', async () => {
     expect.assertions(2);
 
-    await processMockRelease();
+    const localRepoPath = generateGitDirectoryPath();
+    const remoteRepoPath = generateGitDirectoryPath();
 
-    expect(existsSync(MOCK_LOCAL_REPO_PATH + "/README.md")).toBe(true);
-    expect(existsSync(MOCK_REMOTE_REPO_PATH + "/README.md")).toBe(true);
+    await processMockRelease(localRepoPath, remoteRepoPath);
 
-    clean();
-}, 1000);
+    expect(existsSync(localRepoPath + "/README.md")).toBe(true);
+    expect(existsSync(remoteRepoPath + "/README.md")).toBe(true);
+
+    clean(localRepoPath, remoteRepoPath);
+});
 
 it('merges master/develop/staging branches', async () => {
+
     expect.assertions(3);
 
-    await processMockRelease();
+    const localRepoPath = generateGitDirectoryPath();
+    const remoteRepoPath = generateGitDirectoryPath();
 
-    const localRepo = git(MOCK_LOCAL_REPO_PATH);
+    await processMockRelease(localRepoPath, remoteRepoPath);
+
+    const localRepo = git(localRepoPath);
 
     await localRepo.checkout(MOCK_MASTER);
     await localRepo.log((err, result) => {
@@ -42,16 +51,38 @@ it('merges master/develop/staging branches', async () => {
         expect(result.latest.message.startsWith(`Merge branch '${MOCK_DEVELOP}' into ${MOCK_STAGING}`)).toBe(true);
     });
 
-    clean();
-}, 2000);
+    clean(localRepoPath, remoteRepoPath);
+});
+
+it('merges branch even if it has nothing to merge', async () => {
+    expect.assertions(1);
+
+    const localRepoPath = generateGitDirectoryPath();
+    const remoteRepoPath = generateGitDirectoryPath();
+
+    await createMockGitRepos(localRepoPath, remoteRepoPath, getMockBranchConfig(), MOCK_REMOTE);
+    const localRepo = git(localRepoPath);
+
+    localRepo.reset(["--hard", "HEAD~1"]);
+    await localRepo.checkout(MOCK_MASTER);
+
+    await processRelease(localRepoPath, getMockBranchConfig(), MOCK_VERSION);
+
+    expect(true).toBe(true);
+
+    clean(localRepoPath, remoteRepoPath);
+});
 
 
 it('pushes master/develop/staging branches after merge', async () => {
     expect.assertions(3);
 
-    await processMockRelease();
+    const localRepoPath = generateGitDirectoryPath();
+    const remoteRepoPath = generateGitDirectoryPath();
 
-    const remoteRepo = git(MOCK_REMOTE_REPO_PATH);
+    await processMockRelease(localRepoPath, remoteRepoPath);
+
+    const remoteRepo = git(remoteRepoPath);
 
     await remoteRepo.checkout(MOCK_MASTER);
     await remoteRepo.log((err, result) => {
@@ -68,34 +99,33 @@ it('pushes master/develop/staging branches after merge', async () => {
         expect(result.latest.message.startsWith(`Merge branch '${MOCK_DEVELOP}' into ${MOCK_STAGING}`)).toBe(true);
     });
 
-    clean();
-}, 2000);
+    clean(localRepoPath, remoteRepoPath);
+});
 
 it('pushes tag to master', async () => {
     expect.assertions(1);
 
-    await processMockRelease();
+    const localRepoPath = generateGitDirectoryPath();
+    const remoteRepoPath = generateGitDirectoryPath();
 
+    await processMockRelease(localRepoPath, remoteRepoPath);
 
-    const remoteRepo = git(MOCK_REMOTE_REPO_PATH);
+    const remoteRepo = git(remoteRepoPath);
 
     await remoteRepo.tags((err, result) => {
         expect(result.latest).toBe(MOCK_VERSION);
     });
 
-    clean();
-}, 2000);
+    clean(localRepoPath, remoteRepoPath);
+});
 
-async function processMockRelease() {
-    await initMockGitRepos(MOCK_LOCAL_REPO_PATH, MOCK_REMOTE_REPO_PATH, getMockBranchConfig(), MOCK_REMOTE);
-    await processRelease(MOCK_LOCAL_REPO_PATH, getMockBranchConfig(), MOCK_VERSION);
+async function processMockRelease(localRepoPath, remoteRepoPath) {
+    await createMockGitRepos(localRepoPath, remoteRepoPath, getMockBranchConfig(), MOCK_REMOTE);
+    await processRelease(localRepoPath, getMockBranchConfig(), MOCK_VERSION);
 }
 
-function clean() {
-    deleteRepos(MOCK_LOCAL_REPO_PATH, MOCK_REMOTE_REPO_PATH);
+function clean(localRepoPath, remoteRepoPath) {
+    deleteRepos(localRepoPath, remoteRepoPath);
 }
 
-
-const MOCK_LOCAL_REPO_PATH = MOCK_REPO_DIRECTORY_PATH + "/local";
-const MOCK_REMOTE_REPO_PATH = MOCK_REPO_DIRECTORY_PATH + "/remote";
 

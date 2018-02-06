@@ -7,29 +7,19 @@ import {
     MANUAL_MODE, RELEASE_CMS, RELEASE_FRONTEND, RELEASE_INFRASTRUCTURE, RELEASE_INTERFACE,
     RELEASE_SYNCHRONIZER
 } from "./configuration";
-import {checkInteractiveMode, gatherReleaseInfo} from "./user-input/user-input";
-import {lineBreak, log} from "./log/output-formatting";
+import {gatherReleaseInfo} from "./ui/user-input";
+import {lineBreak, log} from "./ui/output-formatting";
 
 
 export default async function release() {
-    const manual = MANUAL_MODE && checkInteractiveMode();
-    const configuration = manual ? gatherReleaseInfo() : defaultConfiguration;
+    const configuration = await gatherReleaseInfo(MANUAL_MODE);
     lineBreak();
-    log("Configuration: " + JSON.stringify(configuration));
+
     lineBreak();
 
     await releaseInfrastructure(configuration.releaseInfrastructure);
-    await releaseSynchronizer(configuration.releaseSynchronizer);
-    await releaseInterface(configuration.releaseInterface);
-    await releaseFrontend(configuration.releaseFrontend);
-    await releaseCms(configuration.releaseCms);
+    await releaseSynchronizer(configuration.releaseSynchronizer, configuration.version);
+    await releaseInterface(configuration.releaseInterface, configuration.version);
+    await releaseFrontend(configuration.releaseFrontend, configuration.version);
+    await releaseCms(configuration.releaseCms, configuration.version);
 }
-
-
-const defaultConfiguration = {
-    releaseInfrastructure: RELEASE_INFRASTRUCTURE,
-    releaseSynchronizer: RELEASE_SYNCHRONIZER,
-    releaseInterface: RELEASE_INTERFACE,
-    releaseFrontend: RELEASE_FRONTEND,
-    releaseCms: RELEASE_CMS
-};

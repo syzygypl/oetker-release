@@ -1,35 +1,47 @@
 import git from "simple-git";
 import {existsSync, writeFileSync} from "fs";
-import * as rimraf from "rimraf";
 import * as mkdirp from "mkdirp";
+import {rmdirSyncRec} from "../../app/service/file-system-service";
+import {MOCK_REPO_DIRECTORY_PATH} from "./git-mock-configuration";
+import uuid from "uuid/v4";
 
-export async function initMockGitRepos(localRepoPath, remoteRepoPath, branchConfig, remote) {
-    createDirectories(localRepoPath, remoteRepoPath);
+export async function createMockGitRepos(localRepoPath, remoteRepoPath, branchConfig, remote) {
     const remoteRepo = await createMockRemoteGitRepo(remoteRepoPath);
     const localRepo = await createMockLocalGitRepo(localRepoPath, remoteRepoPath, branchConfig, remote);
-    return {remoteRepo, localRepo};
+    return null;
 }
 
-export function deleteRepos(localRepoPath, remoteRepoPath){
-    rimraf.sync(localRepoPath);
-    rimraf.sync(remoteRepoPath);
+export function deleteRepos(localRepoPath, remoteRepoPath) {
+    deleteRepo(localRepoPath);
+    deleteRepo(remoteRepoPath);
+}
+
+export function deleteRepo(path) {
+    rmdirSyncRec(path);
+}
+
+export function generateGitDirectoryPath() {
+    return MOCK_REPO_DIRECTORY_PATH + "/" + uuid();
 }
 
 async function createMockRemoteGitRepo(path) {
+    createDirectory(path);
+
     return git(path).init().addConfig("receive.denyCurrentBranch", "updateInstead");
 }
 
-async function createMockLocalGitRepo(path, upstreamPath, branchConfig, remote) {
+
+async function createMockLocalGitRepo(path, remotePath, branchConfig, remote) {
+    createDirectory(path);
     const readmePath = path + "/README.md";
     const testFilePath = path + "/TEST.md";
 
     const repo = git(path);
     return repo.init()
-        .addRemote(remote, upstreamPath + "/.git")
+        .addRemote(remote, remotePath + "/.git")
         .exec(() => {
             writeFileSync(readmePath, "initial readme");
-        })
-        .add(readmePath)
+        }).add(readmePath)
         .commit("initial commit")
         .push(remote, branchConfig.master, {"-u": null})
         .checkoutLocalBranch(branchConfig.develop)
@@ -44,19 +56,9 @@ async function createMockLocalGitRepo(path, upstreamPath, branchConfig, remote) 
         .commit("test commit");
 }
 
-function createDirectories(localRepoPath, remoteRepoPath) {
-    if (existsSync(localRepoPath)) {
-        rimraf.sync(localRepoPath);
+function createDirectory(path){
+    if (existsSync(path)) {
+        rmdirSyncRec(path);
     }
-    mkdirp.sync(localRepoPath);
-
-    if (existsSync(remoteRepoPath)) {
-        rimraf.sync(remoteRepoPath);
-    }
-    mkdirp.sync(remoteRepoPath);
+    mkdirp.sync(path);
 }
-
-
-
-
-

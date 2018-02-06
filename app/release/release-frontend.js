@@ -6,31 +6,22 @@ import {
 import {processRelease} from "../git/git-release";
 import {createStepHandlingFunction} from "../git/git-result-handling";
 import {writeFileSync} from "fs";
-import {lineBreak, logHeader} from "../log/output-formatting";
+import {lineBreak, logHeader} from "../ui/output-formatting";
+import {createFrontendSpecificTaskHandler} from "./specific-tasks/frontend-specific-tasks";
 
-export default async function releaseFrontend(isReleasing) {
+export default async function releaseFrontend(isReleasing, version) {
     logHeader("FRONTEND RELEASE");
     lineBreak();
     logHeader("Releasing frontend: " + (isReleasing ? "YES": "NO"));
     lineBreak();
+
+    const specificTasksHandler = createFrontendSpecificTaskHandler(getFrontendVersionFilePath(), version, branchConfig.master);
+
     if (isReleasing) {
-        return await processRelease(getFrontendDirectory(), branchConfig, VERSION, frontendSpecificTasks);
+        return await processRelease(getFrontendDirectory(), branchConfig, version, specificTasksHandler);
     }
 }
 
-function frontendSpecificTasks(repo) {
-    repo.stash(createStepHandlingFunction("Stashing"))
-        .exec(() => bumpVersion())
-        .add(getFrontendVersionFilePath(), createStepHandlingFunction("Adding " + getFrontendVersionFilePath()))
-        .commit("bump version", createStepHandlingFunction("Committing Version Bump"));
-}
-
-function bumpVersion() {
-    console.log(FgGreen, "Bumping version");
-    const versionObject = {"base": VERSION, "professional": VERSION};
-    writeFileSync(getFrontendVersionFilePath(), JSON.stringify(versionObject, null, "\t"));
-    console.log("\n");
-}
 
 const branchConfig = {
     features: FRONTEND_FEATURE_BRANCH,

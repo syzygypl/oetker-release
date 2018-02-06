@@ -4,7 +4,7 @@ import {
     RELEASE_INFRASTRUCTURE
 } from "../configuration";
 import {showStepInfoOrFail} from "../git/git-result-handling";
-import {lineBreak, logHeader, logImportant} from "../log/output-formatting";
+import {lineBreak, logHeader, logImportant} from "../ui/output-formatting";
 
 
 export default async function releaseInfrastructure(isReleasing) {

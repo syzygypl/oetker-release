@@ -3,15 +3,15 @@ import {
     SYNCHRONIZER_STAGING_BRANCH, VERSION
 } from "../configuration";
 import {processRelease} from "../git/git-release";
-import {lineBreak, logHeader, logImportant} from "../log/output-formatting";
+import {lineBreak, logHeader, logImportant} from "../ui/output-formatting";
 
-export default async function releaseSynchronizer(isReleasing) {
+export default async function releaseSynchronizer(isReleasing, version) {
     logHeader("SYNCHRONIZER RELEASE");
     lineBreak();
     logHeader("Releasing synchronizer: " + ((isReleasing ? "YES": "NO")));
     lineBreak();
     if (isReleasing) {
-        return await processRelease(getSynchronizerDirectory(), branchConfig, VERSION, synchronizerSpecificTasks);
+        return await processRelease(getSynchronizerDirectory(), branchConfig, version, synchronizerSpecificTasks);
     }
 }
 
