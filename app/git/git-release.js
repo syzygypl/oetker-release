@@ -1,4 +1,4 @@
-import {getCmsDirectory, ORIGIN_REPOSITORY} from "../configuration";
+import {ORIGIN_REPOSITORY} from "../configuration";
 import git from "simple-git";
 import {createStepHandlingFunction} from "./git-result-handling";
 import {log} from "../ui/output-formatting";
