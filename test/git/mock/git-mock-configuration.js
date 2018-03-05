@@ -11,9 +11,6 @@ export function getMockBranchConfig() {
 
 export const MOCK_REPO_DIRECTORY_PATH = PATH + "/test-repositories";
 
-export const DEFAULT_MOCK_LOCAL_REPO_PATH = MOCK_REPO_DIRECTORY_PATH + "/local";
-export const DEFAULT_MOCK_REMOTE_REPO_PATH = MOCK_REPO_DIRECTORY_PATH + "/remote";
-
 export const MOCK_MASTER = "master";
 export const MOCK_DEVELOP = "develop";
 export const MOCK_RELEASE = "features";

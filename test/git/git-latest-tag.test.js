@@ -1,6 +1,5 @@
-import {getMockBranchConfig, MOCK_REMOTE, MOCK_REPO_DIRECTORY_PATH, MOCK_VERSION} from "./git-mock-configuration";
-import {processRelease} from "../../app/git/git-release";
-import {deleteRepos, createMockGitRepos, generateGitDirectoryPath} from "./git-release-mock";
+import {getMockBranchConfig, MOCK_REMOTE} from "./mock/git-mock-configuration";
+import {createMockGitRepos, deleteRepos, generateGitDirectoryPath} from "./mock/git-release-mock";
 import {getRepositoriesLatestTag, getRepositoryLatestTag} from "../../app/git/git-latest-tag";
 import git from "simple-git";
 

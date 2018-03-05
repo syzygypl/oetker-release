@@ -1,7 +1,5 @@
-import {
-    getMockBranchConfig, MOCK_REMOTE, MOCK_REPO_DIRECTORY_PATH, MOCK_VERSION
-} from "../git/git-mock-configuration";
-import {deleteRepos, createMockGitRepos, generateGitDirectoryPath} from "../git/git-release-mock";
+import {getMockBranchConfig, MOCK_REMOTE, MOCK_VERSION} from "../git/mock/git-mock-configuration";
+import {createMockGitRepos, deleteRepos, generateGitDirectoryPath} from "../git/mock/git-release-mock";
 import {createFrontendSpecificTaskHandler} from "../../app/release/specific-tasks/frontend-specific-tasks";
 import git from "simple-git";
 import {readFileSync} from "fs";

@@ -1,13 +1,13 @@
 import git from "simple-git";
 import {existsSync, writeFileSync} from "fs";
 import * as mkdirp from "mkdirp";
-import {rmdirSyncRec} from "../../app/service/file-system-service";
+import {rmdirSyncRec} from "../../../app/service/file-system-service";
 import {MOCK_REPO_DIRECTORY_PATH} from "./git-mock-configuration";
 import uuid from "uuid/v4";
 
 export async function createMockGitRepos(localRepoPath, remoteRepoPath, branchConfig, remote) {
-    const remoteRepo = await createMockRemoteGitRepo(remoteRepoPath);
-    const localRepo = await createMockLocalGitRepo(localRepoPath, remoteRepoPath, branchConfig, remote);
+    await createMockRemoteGitRepo(remoteRepoPath);
+    await createMockLocalGitRepo(localRepoPath, remoteRepoPath, branchConfig, remote);
     return null;
 }
 

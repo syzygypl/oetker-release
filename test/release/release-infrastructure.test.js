@@ -1,8 +1,8 @@
-import {createMockGitRepos, generateGitDirectoryPath} from "../git/git-release-mock";
+import {createMockGitRepos, generateGitDirectoryPath} from "../git/mock/git-release-mock";
 import {
     getMockBranchConfig, MOCK_MASTER, MOCK_RELEASE, MOCK_REMOTE,
     MOCK_STAGING,
-} from "../git/git-mock-configuration";
+} from "../git/mock/git-mock-configuration";
 import {handleGitOperations} from "../../app/release/release-infrastructure";
 import git from "simple-git";
 

@@ -1,15 +1,11 @@
-import {existsSync, mkdirSync} from "fs";
-import {deleteRepos, createMockGitRepos, generateGitDirectoryPath} from "./git-release-mock";
+import {existsSync} from "fs";
+import {createMockGitRepos, deleteRepos, generateGitDirectoryPath} from "../git/mock/git-release-mock";
 import git from "simple-git";
 import {processRelease} from "../../app/git/git-release";
 import {
-    DEFAULT_MOCK_LOCAL_REPO_PATH, DEFAULT_MOCK_REMOTE_REPO_PATH,
-    getMockBranchConfig,
-    MOCK_DEVELOP, MOCK_MASTER, MOCK_RELEASE, MOCK_REMOTE, MOCK_REPO_DIRECTORY_PATH,
-    MOCK_STAGING,
+    getMockBranchConfig, MOCK_DEVELOP, MOCK_MASTER, MOCK_REMOTE, MOCK_STAGING,
     MOCK_VERSION
-} from "./git-mock-configuration";
-import {createStepHandlingFunction} from "../../app/git/git-result-handling";
+} from "../git/mock/git-mock-configuration";
 
 it('creates mock repositories', async () => {
     expect.assertions(2);
