@@ -3,15 +3,15 @@ import {
     INTERFACE_STAGING_BRANCH, RELEASE_INTERFACE, VERSION
 } from "../configuration";
 import {processRelease} from "../git/git-release";
-import {lineBreak, logHeader, logImportant} from "../log/output-formatting";
+import {lineBreak, logHeader, logImportant} from "../ui/output-formatting";
 
-export default async function releaseInterface(isReleasing) {
+export default async function releaseInterface(isReleasing, version) {
     logHeader("INTERFACE RELEASE");
     lineBreak();
     logHeader("Releasing interface: " + (isReleasing ? "YES": "NO"));
     lineBreak();
     if (isReleasing) {
-        return await processRelease(getInterfaceDirectory(), branchConfig, VERSION, interfaceSpecificTasks);
+        return await processRelease(getInterfaceDirectory(), branchConfig, version, interfaceSpecificTasks);
     }
 }
 

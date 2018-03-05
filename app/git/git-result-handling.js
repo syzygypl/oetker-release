@@ -1,12 +1,9 @@
-import {lineBreak, LOG_ERROR, logError, logHeader, logImportant, logSuccess} from "../log/output-formatting";
+import {lineBreak, LOG_ERROR, logError, logHeader, logImportant, logSuccess} from "../ui/output-formatting";
 
 export function showStepInfoOrFail(stepName, err, result) {
     logImportant(stepName);
 
-    if (err) {
-        notifyError(err, stepName);
-    }
-
+    notifyError(err, stepName);
     notifySuccess(result);
 }
 
@@ -20,13 +17,16 @@ export function createStepHandlingFunction(stepName, optionalHandler) {
     return (err, result) => showStepInfoOrFail(stepName, err, result);
 }
 
-function notifyError(err, stepName){
+export function notifyError(err, stepName) {
+    if (!err) {
+        return;
+    }
     logHeader("Failed: " + stepName, LOG_ERROR);
-    logError("Errors: " + JSON.stringify(err));
-    process.exit(1);
+    logError("Errors: " + err);
+    throw new Error(err);
 }
 
-function notifySuccess(result){
+function notifySuccess(result) {
     logSuccess("OK");
 
     if (result) {
