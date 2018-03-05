@@ -70,7 +70,7 @@ async function clean(repo, releaseBranchName) {
 async function mergeDevelopToStaging(repo, developBranchName, stagingBranchName) {
     return await repo.checkout(stagingBranchName, createStepHandlingFunction("Checkouting " + stagingBranchName))
         .pull(createStepHandlingFunction("Pull " + stagingBranchName))
-        .mergeFromTo(stagingBranchName, developBranchName, ["--no-ff"],
+        .mergeFromTo(stagingBranchName, developBranchName, ["--no-ff", "--strategy-option=theirs"],
             createStepHandlingFunction("Merging " + developBranchName + " to " + stagingBranchName))
         .push(createStepHandlingFunction("Pushing"));
 }
