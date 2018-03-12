@@ -3,9 +3,12 @@ import git from "simple-git";
 import {createStepHandlingFunction} from "./git-result-handling";
 import {log} from "../ui/output-formatting";
 
-export async function processRelease(directory, branchConfig, version, specificTasks) {
+export async function processRelease(directory, branchConfig, version, specificTasks, finishingTasks) {
     specificTasks = specificTasks || function () {
     };
+    finishingTasks = finishingTasks || function () {
+    };
+
     const releaseBranchName = "release/" + version;
     const repo = git(directory);
 
@@ -18,7 +21,8 @@ export async function processRelease(directory, branchConfig, version, specificT
     await mergeMasterToDevelop(repo, branchConfig.master, branchConfig.develop);
     await clean(repo, releaseBranchName);
     await mergeDevelopToStaging(repo, branchConfig.develop, branchConfig.staging);
-    return await repo.checkout(branchConfig.master, createStepHandlingFunction("Checkout " + branchConfig.master));
+    await repo.checkout(branchConfig.master, createStepHandlingFunction("Checkout " + branchConfig.master));
+    return await finishingTasks(repo);
 }
 
 async function checkoutDevelop(repo, developBranchName) {

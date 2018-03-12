@@ -1,12 +1,10 @@
 import {
-    CMS_DEVELOP_BRANCH, CMS_FEATURE_BRANCH, CMS_FRONTEND_DIRECTORY, CMS_MASTER_BRANCH, CMS_STAGING_BRANCH,
-    FRONTEND_BUILD_SCRIPT, FRONTEND_MASTER_BRANCH, getCmsDirectory, getFrontendBuildDirectory, getFrontendDirectory,
-    RELEASE_CMS, VERSION
+    CMS_DEVELOP_BRANCH, CMS_FEATURE_BRANCH, CMS_MASTER_BRANCH, CMS_STAGING_BRANCH,
+    getCmsDirectory
 } from "../configuration";
-import {createStepHandlingFunction} from "../git/git-result-handling";
-import {execSync} from "child_process";
 import {processRelease} from "../git/git-release";
-import {lineBreak, logHeader, logImportant} from "../ui/output-formatting";
+import {lineBreak, logHeader} from "../ui/output-formatting";
+import {createAfterReleaseTasksHandler, createCmsSpecificTasksHandler} from "./specific-tasks/cms-specific-tasks";
 
 
 export default async function releaseCms(isReleasing, version) {
@@ -15,31 +13,15 @@ export default async function releaseCms(isReleasing, version) {
     logHeader("Releasing CMS: " + (isReleasing ? "YES" : "NO"));
     lineBreak();
 
-    const specificTaskHandler = createCmsSpecificTasksHandler(branchConfig.master, branchConfig.develop);
-
+    const specificTaskHandler = createCmsSpecificTasksHandler();
+    const afterReleaseTasksHandler = createAfterReleaseTasksHandler();
     if (isReleasing) {
-        return await processRelease(getCmsDirectory(), branchConfig, version, specificTaskHandler);
+        return await processCmsRelease(getCmsDirectory(), branchConfig, version, specificTaskHandler, afterReleaseTasksHandler);
     }
 }
 
-function createCmsSpecificTasksHandler(master, develop) {
-    return (repo) => {
-        repo.stash(createStepHandlingFunction("Stashing"))
-            .exec(() => buildFrontend())
-            .add(CMS_FRONTEND_DIRECTORY, createStepHandlingFunction("Adding " + CMS_FRONTEND_DIRECTORY))
-            .commit("frontend build", createStepHandlingFunction("Committing Frontend Build"));
-    }
-}
-
-function cmsSpecificTasks(repo) {
-
-}
-
-export function buildFrontend() {
-    console.log("Building frontend");
-    execSync(FRONTEND_BUILD_SCRIPT + ' ' + getFrontendBuildDirectory() + ' ' + FRONTEND_MASTER_BRANCH, {'stdio': 'inherit'});
-    console.log("Frontend built");
-    console.log("\n");
+export async function processCmsRelease(directory, branchConfig, version, specificTasksHandler, afterReleaseTasksHandler){
+    await processRelease(directory, branchConfig, version, specificTasksHandler, afterReleaseTasksHandler);
 }
 
 const branchConfig = {
