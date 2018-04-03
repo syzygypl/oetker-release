@@ -5,7 +5,7 @@ import {
 import {createStepHandlingFunction} from "../../git/git-result-handling";
 import {execSync} from "child_process";
 
-export async function createAfterReleaseTasksHandler(){
+export function createAfterReleaseTasksHandler(){
     const frontendBuildHandlerFunction = frontendBuildHandler(getFrontendDirectory(), FRONTEND_STAGING_BRANCH, getFrontendBuildDirectory());
     return frontendBuildSpecificTasksHandler(CMS_STAGING_BRANCH, frontendBuildHandlerFunction, CMS_FRONTEND_DIRECTORY);
 }
