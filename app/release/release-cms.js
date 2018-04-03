@@ -7,14 +7,14 @@ import {lineBreak, logHeader} from "../ui/output-formatting";
 import {createAfterReleaseTasksHandler, createCmsSpecificTasksHandler} from "./specific-tasks/cms-specific-tasks";
 
 
-export default async function releaseCms(isReleasing, version) {
+export default async function releaseCms(isReleasing, isFrontendReleasing, version) {
     logHeader("CMS RELEASE");
     lineBreak();
     logHeader("Releasing CMS: " + (isReleasing ? "YES" : "NO"));
     lineBreak();
 
-    const specificTaskHandler = createCmsSpecificTasksHandler();
-    const afterReleaseTasksHandler = createAfterReleaseTasksHandler();
+    const specificTaskHandler = isFrontendReleasing ? createCmsSpecificTasksHandler() : null;
+    const afterReleaseTasksHandler = isFrontendReleasing ? createAfterReleaseTasksHandler() : null;
     if (isReleasing) {
         return await processCmsRelease(getCmsDirectory(), branchConfig, version, specificTaskHandler, afterReleaseTasksHandler);
     }
