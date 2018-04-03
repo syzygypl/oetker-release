@@ -1,20 +1,19 @@
 import * as readline from 'readline-sync';
 import {getRepositoriesLatestTag} from "../git/git-latest-tag";
 import {
-    getCmsDirectory, getFrontendDirectory, getInterfaceDirectory, getSynchronizerDirectory,
-    RELEASE_CMS, RELEASE_FRONTEND, RELEASE_INFRASTRUCTURE, RELEASE_INTERFACE, RELEASE_SYNCHRONIZER, VERSION
+    getCmsDirectory, getFrontendDirectory, getInterfaceDirectory, getSynchronizerDirectory, RELEASE_CMS,
+    RELEASE_FRONTEND, RELEASE_INFRASTRUCTURE, RELEASE_INTERFACE, RELEASE_SYNCHRONIZER, VERSION
 } from "../configuration";
 import {lineBreak, log, logImportant} from "./output-formatting";
 import {bumpFixVersion, bumpMinorVersion} from "../service/semantic-versioning-service";
 import {printConfiguration} from "./user-output";
 
 
-export async function gatherReleaseInfo(isManual) {
+export async function gatherReleaseInfo() {
     const configuration = {};
-    isManual = isManual && checkInteractiveMode();
 
-    if (!isManual) {
-        return DEFAULT_CONFIGURATION;
+    if(!checkInteractiveMode()){
+        throw new Error("You have to confirm interactive mode");
     }
 
     configuration.releaseInfrastructure = readline.keyInYN('Release Infrastructure?');
@@ -58,7 +57,7 @@ function waitForConfirmation(){
 
 function checkInteractiveMode() {
     try {
-        return readline.keyInYN("Check Interactive mode");
+        return readline.keyInYN("Confirm that you are in interactive mode");
     } catch (e) {
         return false;
     }

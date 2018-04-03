@@ -3,15 +3,12 @@ import releaseSynchronizer from './release/release-synchronizer';
 import releaseInterface from './release/release-interface';
 import releaseFrontend from './release/release-frontend';
 import releaseCms from './release/release-cms';
-import {MANUAL_MODE} from "./configuration";
 import {gatherReleaseInfo} from "./ui/user-input";
 import {lineBreak} from "./ui/output-formatting";
 
 
 export default async function release() {
-    const configuration = await gatherReleaseInfo(MANUAL_MODE);
-    lineBreak();
-
+    const configuration = await gatherReleaseInfo();
     lineBreak();
 
     await releaseInfrastructure(configuration.releaseInfrastructure);

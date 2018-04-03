@@ -3,8 +3,6 @@ export const PROJECTS_DIRECTORY = "/Volumes/dev/Sites/oetker";
 export const ORIGIN_REPOSITORY = "origin";
 export const VERSION = 'v1.22.120';
 
-export const MANUAL_MODE = true;
-
 export const RELEASE_INFRASTRUCTURE = true;
 export const RELEASE_CMS = true;
 export const RELEASE_FRONTEND = true;
