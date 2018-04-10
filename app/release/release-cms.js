@@ -15,7 +15,7 @@ export default async function releaseCms(isReleasing, isFrontendReleasing, versi
 
     const specificTaskHandler = isFrontendReleasing ? createCmsSpecificTasksHandler() : null;
     const afterReleaseTasksHandler = isFrontendReleasing ? createAfterReleaseTasksHandler() : null;
-    if (isReleasing) {
+    if (isReleasing || isFrontendReleasing) {
         return await processCmsRelease(getCmsDirectory(), branchConfig, version, specificTaskHandler, afterReleaseTasksHandler);
     }
 }
