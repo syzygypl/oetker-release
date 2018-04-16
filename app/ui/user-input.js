@@ -81,13 +81,16 @@ function resolveNextTag(tag, tagBumpType) {
         return bumpFixVersion(tag);
     } else if (tagBumpType === MINOR) {
         return bumpMinorVersion(tag);
+    } else if (tagBumpType === CURRENT) {
+        return tag;
     }
 }
 
 const MINOR = "minor";
 const FIX = "fix";
+const CURRENT = "current";
 
-const tagBumpTypes = [FIX, MINOR];
+const tagBumpTypes = [FIX, MINOR, CURRENT];
 
 const DEFAULT_CONFIGURATION = {
     releaseInfrastructure: RELEASE_INFRASTRUCTURE,
