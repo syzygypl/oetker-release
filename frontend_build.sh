@@ -17,7 +17,7 @@ function main {
     # loading nvm
     . ~/.nvm/nvm.sh
 
-    if ! nvm use stable; then
+    if ! nvm use oetker; then
         echo "cannot use nvm"
         echo "please see if script ~/.nvm/nvm.sh exists or version oetker"
         exit 1
