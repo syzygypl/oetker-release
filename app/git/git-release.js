@@ -23,6 +23,7 @@ export async function processRelease(directory, branchConfig, version, specificT
     await mergeDevelopToStaging(repo, branchConfig.develop, branchConfig.staging);
     await repo.checkout(branchConfig.master, createStepHandlingFunction("Checkout " + branchConfig.master));
     await finishingTasks(repo);
+    await repo.push(ORIGIN_REPOSITORY, createStepHandlingFunction("Push repo after finishing tasks"));
 }
 
 async function checkoutDevelop(repo, developBranchName) {
