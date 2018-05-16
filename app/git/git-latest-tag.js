@@ -1,5 +1,16 @@
 import git from "simple-git/promise";
-import {notifyError} from "./git-result-handling";
+import {getCmsDirectory, getFrontendDirectory, getInterfaceDirectory, getSynchronizerDirectory} from "../configuration";
+import {logError} from "../log/output-formatting";
+
+
+export async function getLatestTag() {
+    return await getRepositoriesLatestTag([
+        getSynchronizerDirectory(),
+        getInterfaceDirectory(),
+        getFrontendDirectory(),
+        getCmsDirectory()
+    ]);
+}
 
 export async function getRepositoriesLatestTag(repositoriesDirectories) {
     const tags = await Promise.all(repositoriesDirectories.map(async (directory) => await getRepositoryLatestTag(directory)));
@@ -10,8 +21,14 @@ export async function getRepositoriesLatestTag(repositoriesDirectories) {
 
 export async function getRepositoryLatestTag(directory) {
     const repo = git(directory);
-    repo.checkout("master", notifyError);
-    repo.pull(notifyError);
-    const tags = await repo.tags(notifyError);
+    let tags = {};
+    try{
+        await repo.checkout("master");
+        await repo.pull();
+        tags = await repo.tags();
+    }catch (e){
+        logError("Failed to fetch tags in directory " + directory + ": " + e);
+        throw e;
+    }
     return tags.latest || "";
 }

@@ -1,12 +1,12 @@
 import * as readline from 'readline-sync';
-import {getRepositoriesLatestTag} from "../git/git-latest-tag";
 import {
-    getCmsDirectory, getFrontendDirectory, getInterfaceDirectory, getSynchronizerDirectory, RELEASE_CMS,
-    RELEASE_FRONTEND, RELEASE_INFRASTRUCTURE, RELEASE_INTERFACE, RELEASE_SYNCHRONIZER, VERSION
+    RELEASE_CMS, RELEASE_FRONTEND, RELEASE_INFRASTRUCTURE, RELEASE_INTERFACE, RELEASE_SYNCHRONIZER,
+    VERSION
 } from "../configuration";
 import {lineBreak, log, logImportant} from "./output-formatting";
 import {bumpFixVersion, bumpMinorVersion} from "../service/semantic-versioning-service";
 import {printConfiguration} from "./user-output";
+import {getLatestTag} from "../git/git-latest-tag";
 
 
 export async function gatherReleaseInfo() {
@@ -63,14 +63,6 @@ function checkInteractiveMode() {
     }
 }
 
-async function getLatestTag() {
-    return await getRepositoriesLatestTag([
-        getSynchronizerDirectory(),
-        getInterfaceDirectory(),
-        getFrontendDirectory(),
-        getCmsDirectory()
-    ]);
-}
 
 function readTagBumpType() {
     return tagBumpTypes[readline.keyInSelect(tagBumpTypes, "Select bump type", {"cancel": false})];
