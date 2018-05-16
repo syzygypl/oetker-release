@@ -1,4 +1,4 @@
-export const PROJECTS_DIRECTORY = "/Volumes/dev/Sites/oetker";
+export const PROJECTS_DIRECTORY = "/Users/mateuszdolega/PhpstormProjects/oetker";
 
 export const ORIGIN_REPOSITORY = "origin";
 export const VERSION = 'v1.22.120';
@@ -8,9 +8,6 @@ export const RELEASE_CMS = true;
 export const RELEASE_FRONTEND = true;
 export const RELEASE_SYNCHRONIZER = true;
 export const RELEASE_INTERFACE = true;
-
-
-
 
 export const INFRASTRUCTURE_MASTER_BRANCH = 'feature/ubuntu16';
 export const INFRASTRUCTURE_FEATURES_BRANCH = 'features';
@@ -65,22 +62,22 @@ export const SYNCHRONIZER_STAGING_BRANCH = 'qa';
 
 
 export function getInfrastructureDirectory() {
-    return PROJECTS_DIRECTORY + "/" + "infrastructure.oetker.de";
+    return PROJECTS_DIRECTORY + "/" + "infrastructure-2015";
 }
 export function getCmsDirectory() {
-    return PROJECTS_DIRECTORY + "/" + "cms.oetker.de";
+    return PROJECTS_DIRECTORY + "/" + "cms-2015";
 }
 export function getFrontendDirectory() {
-    return PROJECTS_DIRECTORY + "/" + "frontend.oetker.de";
+    return PROJECTS_DIRECTORY + "/" + "responsive-2015";
 }
 export function getFrontendBuildDirectory() {
-    return PROJECTS_DIRECTORY + "/" + "frontend.oetker.de" + "/" + "source";
+    return PROJECTS_DIRECTORY + "/" + "responsive-2015" + "/" + "source";
 }
 export function getInterfaceDirectory() {
-    return PROJECTS_DIRECTORY + "/" + "externalinterface.oetker.de";
+    return PROJECTS_DIRECTORY + "/" + "externalinterface-2016";
 }
 export function getSynchronizerDirectory() {
-    return PROJECTS_DIRECTORY + "/" + "synchronizer.oetker.de";
+    return PROJECTS_DIRECTORY + "/" + "synchronizer-2016";
 }
 export function getFrontendVersionFilePath() {
     return getFrontendDirectory() + "/" + FRONTEND_VERSION_FILE_PATH;
