@@ -9,9 +9,9 @@ export const RELEASE_FRONTEND = true;
 export const RELEASE_SYNCHRONIZER = true;
 export const RELEASE_INTERFACE = true;
 
-export const INFRASTRUCTURE_MASTER_BRANCH = 'feature/ubuntu16';
+export const INFRASTRUCTURE_MASTER_BRANCH = 'master';
 export const INFRASTRUCTURE_FEATURES_BRANCH = 'features';
-export const INFRASTRUCTURE_STAGING_BRANCH = 'ubuntu16-qa';
+export const INFRASTRUCTURE_STAGING_BRANCH = 'qa';
 
 // export const CMS_MASTER_BRANCH = 'test-release-script-master';
 // export const CMS_FEATURE_BRANCH = 'test-release-script-release';
